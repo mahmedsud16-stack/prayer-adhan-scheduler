@@ -1,0 +1,36 @@
+# Adhan scheduler — fires the automatic adhan at prayer time.
+# Cron offset to :02 (2/5) dodges the top-of-hour GitHub Actions load.
+# Public repo = unlimited Actions minutes (a */5 poll is ~4,320
+# min/month — over the 2,000-min private-repo free tier).
+name: adhan-scheduler
+
+on:
+  schedule:
+    - cron: '2/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-prayer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: scheduler
+      - name: Check prayer times and fire sensors
+        run: node scheduler.js
+        working-directory: scheduler
+        env:
+          ALEXA_CLIENT_ID: ${{ secrets.ALEXA_CLIENT_ID }}
+          ALEXA_CLIENT_SECRET: ${{ secrets.ALEXA_CLIENT_SECRET }}
+          LWA_ACCESS_TOKEN: ${{ secrets.LWA_ACCESS_TOKEN }}
+          LWA_REFRESH_TOKEN: ${{ secrets.LWA_REFRESH_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          AWQAF_API_KEY: ${{ secrets.AWQAF_API_KEY }}
+          GITHUB_REPO: ${{ github.repository }}

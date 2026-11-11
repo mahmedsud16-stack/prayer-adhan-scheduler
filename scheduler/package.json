@@ -1,0 +1,1 @@
+{"dependencies":{"tweetnacl":"^1.0.3"},"description":"GitHub Actions scheduler for the automatic adhan: computes prayer times with the skill's chain and fires ChangeReports to flip the virtual prayer sensors.","engines":{"node":">=20"},"main":"scheduler.js","name":"prayer-adhan-scheduler","private":true,"scripts":{"dry-run":"DRY_RUN=1 node scheduler.js"},"version":"1.0.0"}
